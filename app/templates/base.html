@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    {% block head_meta %}{% endblock %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/screen.css') }}" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}" type="text/css" media="print">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/buttons/screen.css') }}" type="text/css" media="screen, projection">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/coustom.css') }}" type="text/css" media="screen, projection">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}?v=2" />
+    <title>{% block title %}myswap{% endblock %}</title>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% include 'header.html' %}
+    
+    {% block content %}{% endblock %}
+    
+    {% include 'footer.html' %}
+    
+    <script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.urldecoder.min.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

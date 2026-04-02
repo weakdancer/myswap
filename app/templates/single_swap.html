@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block head_meta %}
+<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
+<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
+{% endblock %}
+
+{% block title %}myswap-({{ settings.username }}-{% if swap %}{{ swap.alias }}{% else %}{{ about_to_create_alias }}{% endif %}){% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+{% if username != 'Ayl' %}
+
+<div class="span-24">
+
+    <center><h3>~ WDDC:{{ "%0.2f"|format(d_c_date) }} ~</h3></center>
+    <center><h3><a href="/{{ settings.username }}/{% if swap %}{{ swap.swap_id }}{% else %}{{ about_to_create_alias }}{% endif %}">~ SWAP ID:{% if swap %}{{ swap.swap_id }}{% else %}?{% endif %} ~</a></h3></center>
+    <br />
+    <center><h3><a href="/{{ settings.username }}/{% if swap %}{{ swap.alias|default(swap.swap_id) }}{% else %}{{ about_to_create_alias }}{% endif %}?strip=true">~ STRIP ~</a></h3></center>
+    <br />
+
+    <div class="span-10">
+        {% if about_to_create_alias %}
+        <form action="/{{ settings.username }}/addSwap" class="new_note" method="post">
+        {% else %}
+        <form action="/{{ settings.username }}/updateSwap" class="new_note" method="post">
+        {% endif %}
+
+            <textarea class=" span-10" style="height:800px" id="content" name="content">{% if swap %}{{ swap.content }}{% endif %}</textarea>
+            
+            <input type="password" name="password" /><span >password</span><br />
+            
+            <input type="text" name="alias" value="{% if swap %}{% if swap.alias %}{{ swap.alias }}{% else %}{{ swap.swap_id }}{% endif %}{% else %}{{ about_to_create_alias }}{% endif %}" /><span >alias</span><br />
+            
+             <input type="hidden" name="swap_id" value="{% if swap %}{{ swap.swap_id }}{% endif %}"  />
+             <input type="hidden" name="last_alias" value="{% if swap %}{{ swap.alias }}{% endif %}"  />
+            
+            <button type="submit" class="btn primary">
+            {% if about_to_create_alias %}
+            add
+            {% else %}
+            update
+            {% endif %}
+            </button>
+        
+
+    </form>
+    </div>
+
+    <div class="span-12">
+        <div style="word-wrap: break-word;width:600px;white-space: pre-wrap;">{% if swap %}{{ swap.content|transform_url|safe }}{% endif %}</div>
+    </div>
+
+
+</div>
+
+{% endif %}
+
+
+{% if username == 'Ayl' %}
+Ayl
+{% endif %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/scraper.js') }}"></script>
+<script src="{{ url_for('static', filename='js/content-alert.js') }}"></script>
+{% endblock %}

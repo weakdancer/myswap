@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}myswap-HOWTO{% endblock %}
+
+{% block content %}
+<div class="container">
+<h1>如何使用 / HOWTO</h1>
+<hr />
+
+<h2>1. 注册</h2>
+<p>访问 <a href="/Signup">/Signup</a> 创建一个新用户。</p>
+
+<h2>2. 访问你的主页</h2>
+<p>你的主页地址是 <code>/你的用户名</code></p>
+
+<h2>3. 添加 Swap</h2>
+<p>在你的主页或任意 alias 页面，输入密码和内容，点击 add。</p>
+
+<h2>4. 设置</h2>
+<p>访问 <code>/你的用户名/setting</code> 修改设置，包括：</p>
+<ul>
+    <li>friends - 你的朋友列表（空格分隔）</li>
+    <li>userAliases - 要在首页显示的 swap 别名（空格分隔）</li>
+    <li>birthday - 用于计算 D_C_date</li>
+</ul>
+
+</div>
+{% endblock %}

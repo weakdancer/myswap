@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head_meta %}
+<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
+<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
+{% endblock %}
+
+{% block title %}myswap (taiji implant)/种殖{% endblock %}
+
+{% block content %}
+<div class="container"> 
+<center>
+
+<h1 class="success">
+    种殖：种植并繁殖文字
+</h1>
+<h1 class="success">
+    Stacueue: /stăkjuː/ Stack + Queue
+</h1>
+<h1 class="error">
+    <a class="" href="/Signup">开始使用	/Start here</a><br><br>
+    <a class="" href="/myswap/howto">如何使用/HOWTO？	</a><br><br>
+    <a class="" href="/myswap/faq">常见问题/FAQ	</a><br><br>
+<a class="" href="/myswap/why">WHY?	</a>
+ </h1>
+  <img src="{{ url_for('static', filename='img/taiji_implant.png') }}"></img>
+  <img src="{{ url_for('static', filename='img/stacueue.png') }}"></img>
+  
+   </center> 
+{% endblock %}

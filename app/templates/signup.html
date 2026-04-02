@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block head_meta %}
+<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
+<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
+{% endblock %}
+
+{% block title %}myswap-signup{% endblock %}
+
+{% block content %}
+<div class="container"> 
+<center>
+
+<h1 class="success">
+    Signup
+</h1>
+
+<div class="container box">
+<form action="/Signup" method="post">
+    <fieldset>
+        <legend class="alt">signup</legend>
+        
+        <div class="span-8 colborder "><span >username</span></div>
+        <div class="span-8 colborder"><input type="text" name="username" /></div>
+        
+        <div class="span-8 colborder "><span >email</span></div>
+        <div class="span-8 colborder"><input type="text" name="email" /></div>
+        
+        <div class="span-8 colborder "><span >password</span></div>
+        <div class="span-8 colborder"><input type="password" name="password" /></div>
+        
+        <div class="span-8 colborder "><span >confirm_password</span></div>
+        <div class="span-8 colborder"><input type="password" name="confirm_password" /></div>
+        
+        <div class="span-8 colborder "><span >friends</span></div>
+        <div class="span-8 colborder"><input type="text" name="friends" /><span class="alt help">-split with whitespace</span></div>
+        
+        <div class="span-8 colborder ">
+            <button type="submit" class="btn primary">signup</button>
+        </div>
+    </fieldset>
+</form>
+</div>
+
+</center>
+</div>
+{% endblock %}

@@ -1,0 +1,17 @@
+body {
+	
+}
+li.wd{
+	margin:auto;
+	height:24px;
+	font-family: "Sans-serif";
+	list-style-type: none;
+	text-align:left;
+}
+.label {
+
+	background:#fff;
+}
+.help {
+	color: #CCC;
+}

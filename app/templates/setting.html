@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block head_meta %}
+<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
+<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
+{% endblock %}
+
+{% block title %}myswap-setting{% endblock %}
+
+{% block content %}
+
+<fieldset class="container">
+  <legend  >settings/设置</legend> 
+<div class="">
+<form action="/{{ settings.username }}/setting" method="post">
+
+
+    <ul>
+        <li class="label">
+            <label for="password">password-----------</label>
+                  <input type="password" id="password"   name="password"   /><span class="alt help">-A MUST/必须填写</span>
+        </li>
+        <li class="label">
+            <label for="username">username-----------</label>
+                        <input type="text"   id="username"   name="username" value="{{ settings.username }}" />
+        </li>
+        <li class="label">
+            <label for="friends">friends-------------</label>
+                  <input type="text"  name="friends" id="friends" value="{{ settings.friends or '' }}"/><span class="alt help">-split with whitespace/使用空格隔开每个对象</span>
+        </li>
+        <li class="label">
+            <label for="userAliases">userAliases--------</label>
+                        <input type="text"   name="userAliases" id="userAliases" value="{{ settings.userAliases or '' }}"/><span class="alt help">-split with whitespace/使用空格隔开每个对象</span>
+        </li>
+        <li class="label">
+            <label for="birthday">birthday--------</label>
+            <input type="text"   name="birthday" id="birthday" value="{{ settings.birthday or '' }}"/><span class="alt help">-format/格式 1990-10-16</span>
+        </li>
+        <li class="label">
+            <label for="new_password">new_password----</label>
+                  <input type="password"   id="new_password"  name="new_password"   /><span class="alt help">-leave it blank if you do't want change/如果不需要修改密码，就不用填</span>
+        </li>
+        <li class="label">
+            <label for="confirm_password">confirm_password</label>
+                        <input type="password"   id="confirm_password"  name="confirm_password"   /><span class="alt help">-confirm_password/重复上方密码</span>
+        </li>
+                <div class="buttons">
+                        <button type="submit" class="btn primary">
+                          save/保存
+                        </button>
+                </div>
+    </ul>
+</form>
+</div>
+</fieldset>
+
+{% endblock %}

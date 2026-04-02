@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}myswap-All For Plain Text Sharing{% endblock %}
+
+{% block content %}
+
+<div class="container"> 
+<img src="{{ url_for('static', filename='img/logo.jpg') }}" ></img>
+
+<p>你的东西在： http://myswap.sinaapp.com/{your_user_name}</p>
+<p>很久没有管理了，看到有几个人注册但没有使用，可能是我没有说明用法的原因。</p>
+22:08 2012/1/29
+<h1>这个网站没有登录的概念</h1>
+<h2>注册</h2>
+<p>推荐把密码设置的短一些，这样每次添加swap是就方便一些。</p>
+
+<h2>添加swap</h2>
+<p>密码必须输入，alias（别名）可选</p>
+
+<h2>设置</h2>
+<p>必须输入密码，friends是你的朋友会在你的首页显示，userAliases是要在首页显示的swap</p>
+
+
+</div>
+
+{% endblock %}
