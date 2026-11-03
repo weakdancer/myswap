@@ -1,71 +1,16 @@
 {% extends 'base.html' %}
-
-{% block head_meta %}
-<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
-<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
-{% endblock %}
-
-{% block title %}myswap-({{ settings.username }}-{% if swap %}{{ swap.alias }}{% else %}{{ about_to_create_alias }}{% endif %}){% endblock %}
-
+{% block title %}{% if swap %}{{ swap.alias or swap.swap_id }}{% else %}{{ about_to_create_alias }}{% endif %} · {{ settings.username }} · myswap{% endblock %}
 {% block content %}
-
-<div class="container">
-
 {% if username != 'Ayl' %}
-
-<div class="span-24">
-
-    <center><h3>~ WDDC:{{ "%0.2f"|format(d_c_date) }} ~</h3></center>
-    <center><h3><a href="/{{ settings.username }}/{% if swap %}{{ swap.swap_id }}{% else %}{{ about_to_create_alias }}{% endif %}">~ SWAP ID:{% if swap %}{{ swap.swap_id }}{% else %}?{% endif %} ~</a></h3></center>
-    <br />
-    <center><h3><a href="/{{ settings.username }}/{% if swap %}{{ swap.alias|default(swap.swap_id) }}{% else %}{{ about_to_create_alias }}{% endif %}?strip=true">~ STRIP ~</a></h3></center>
-    <br />
-
-    <div class="span-10">
-        {% if about_to_create_alias %}
-        <form action="/{{ settings.username }}/addSwap" class="new_note" method="post">
-        {% else %}
-        <form action="/{{ settings.username }}/updateSwap" class="new_note" method="post">
-        {% endif %}
-
-            <textarea class=" span-10" style="height:800px" id="content" name="content">{% if swap %}{{ swap.content }}{% endif %}</textarea>
-            
-            <input type="password" name="password" /><span >password</span><br />
-            
-            <input type="text" name="alias" value="{% if swap %}{% if swap.alias %}{{ swap.alias }}{% else %}{{ swap.swap_id }}{% endif %}{% else %}{{ about_to_create_alias }}{% endif %}" /><span >alias</span><br />
-            
-             <input type="hidden" name="swap_id" value="{% if swap %}{{ swap.swap_id }}{% endif %}"  />
-             <input type="hidden" name="last_alias" value="{% if swap %}{{ swap.alias }}{% endif %}"  />
-            
-            <button type="submit" class="btn primary">
-            {% if about_to_create_alias %}
-            add
-            {% else %}
-            update
-            {% endif %}
-            </button>
-        
-
-    </form>
-    </div>
-
-    <div class="span-12">
-        <div style="word-wrap: break-word;width:600px;white-space: pre-wrap;">{% if swap %}{{ swap.content|transform_url|safe }}{% endif %}</div>
-    </div>
-
-
-</div>
-
-{% endif %}
-
-
-{% if username == 'Ayl' %}
-Ayl
-{% endif %}
-
+<a href="/{{ settings.username }}" class="back-link">{{ icon('back') }} 返回 {{ settings.username }} 的空间</a>
+<div class="page-heading editor-page-heading"><div><div class="eyebrow">{% if swap %}A LITTLE PIECE OF YOUR MIND{% else %}PLANT A NEW IDEA{% endif %}</div><h1>{% if swap %}{{ swap.alias or swap.swap_id }}{% else %}新建 Swap{% endif %}</h1><p>{% if swap %}让想法继续生长。每一处修改，都从这里开始。{% else %}这个地址还没有文字，写下它的第一句话吧。{% endif %}</p></div>{% if swap %}<div class="editor-actions"><button type="button" class="button button-subtle" data-copy-link>{{ icon('copy') }} 复制链接</button><a class="button button-subtle" href="/{{ settings.username }}/{{ swap.alias or swap.swap_id }}?strip=true">纯文本 {{ icon('arrow-up') }}</a></div>{% endif %}</div>
+<div class="editor-layout"><form action="/{{ settings.username }}/{% if swap %}updateSwap{% else %}addSwap{% endif %}" method="post" class="editor-form panel" data-dirty-form>
+    <div class="editor-panel-heading"><h2>{{ icon('file') }} 编辑文字</h2><span class="editor-state" data-editor-state>未修改</span></div>
+    <label class="sr-only" for="content">Swap 内容</label><textarea class="main-editor" id="content" name="content" placeholder="让一个想法，从这里开始…" required data-preview-source data-count-target="editor-count">{% if request.method == 'POST' %}{{ request.form.get('content', '') }}{% elif swap %}{{ swap.content }}{% endif %}</textarea><div class="editor-status"><span>纯文本 · Plain text</span><span id="editor-count">0 字符</span></div>
+    <div class="editor-fields"><div class="field"><label for="alias">别名 <span>Alias</span></label><input type="text" id="alias" name="alias" pattern="[A-Za-z0-9-]+" value="{% if request.method == 'POST' %}{{ request.form.get('alias', '') }}{% elif swap %}{{ swap.alias or '' }}{% else %}{{ about_to_create_alias }}{% endif %}" placeholder="为这段文字起个名字"><p class="field-help">使用英文字母、数字或连字符。留空则使用 Swap ID。</p></div><div class="field"><label for="password">密码</label><input type="password" id="password" name="password" autocomplete="current-password" placeholder="输入空间密码以保存" required></div>
+    <input type="hidden" name="swap_id" value="{% if swap %}{{ swap.swap_id }}{% endif %}"><input type="hidden" name="last_alias" value="{% if swap %}{{ swap.alias or '' }}{% endif %}"><div class="form-actions"><span class="small-muted">{{ icon('lock') }} 仅保存时验证密码</span><button type="submit" class="button button-dark">{% if swap %}保存修改{% else %}创建 Swap{% endif %} {{ icon('arrow') }}</button></div></div>
+</form><section class="preview-panel panel" aria-labelledby="preview-title"><div class="editor-panel-heading"><h2 id="preview-title">阅读预览</h2><span class="live-pill"><span class="status-dot"></span> 实时</span></div><div class="preview-content" data-preview-output>{% if request.method == 'POST' %}{{ request.form.get('content', '')|transform_url|safe }}{% elif swap %}{{ swap.content|transform_url|safe }}{% endif %}</div><p class="preview-placeholder" data-preview-placeholder {% if swap or request.form.get('content') %}hidden{% endif %}>你的文字，会在这里慢慢成形。</p><div class="preview-footer"><span>{% if swap %}SWAP / <a href="/{{ settings.username }}/{{ swap.swap_id }}">{{ '%03d'|format(swap.swap_id) }}</a>{% else %}NEW SWAP{% endif %}</span><span>D_C_DATE {{ '%0.2f'|format(d_c_date) }}</span></div></section></div>
+<div role="status" class="toast" data-toast hidden></div>
+{% else %}<div class="panel">Ayl</div>{% endif %}
 {% endblock %}
-
-{% block extra_js %}
-<script src="{{ url_for('static', filename='js/scraper.js') }}"></script>
-<script src="{{ url_for('static', filename='js/content-alert.js') }}"></script>
-{% endblock %}
+{% block extra_js %}<script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js') }}"></script><script src="{{ url_for('static', filename='js/jquery.urldecoder.min.js') }}"></script><script src="{{ url_for('static', filename='js/scraper.js') }}"></script>{% endblock %}

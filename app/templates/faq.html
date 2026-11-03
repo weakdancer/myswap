@@ -1,23 +1,5 @@
 {% extends 'base.html' %}
-
-{% block title %}myswap-FAQ{% endblock %}
-
+{% block title %}常见问题 · myswap{% endblock %}
 {% block content %}
-<div class="container">
-<h1>常见问题 / FAQ</h1>
-<hr />
-
-<h2>Q: 什么是 myswap?</h2>
-<p>A: myswap 是一个纯文本分享工具，让你可以像种植和繁殖文字一样管理你的内容。</p>
-
-<h2>Q: 为什么没有登录功能?</h2>
-<p>A: 这是设计上的选择。你只需要记住你的用户名和密码，每次操作（如添加、修改内容）时输入密码即可。</p>
-
-<h2>Q: 什么是 Stacueue?</h2>
-<p>A: Stacueue = Stack + Queue，栈和队列的结合。这是这个项目的核心理念。</p>
-
-<h2>Q: 什么是 D_C_date?</h2>
-<p>A: D_C_date 是从你的生日开始计算的天数，加上当天时间比例的一个数值。</p>
-
-</div>
+<article class="reading-page"><div class="eyebrow">A FEW GOOD QUESTIONS</div><h1>你可能想知道。</h1><p class="reading-lead">关于 myswap 的几个小问题。</p><div class="faq-list"><details open><summary>什么是 myswap？<span>+</span></summary><p>myswap 是一个纯文本分享工具。把每段内容当作一个 Swap，像种植和繁殖文字一样，慢慢积累、整理和分享你的想法。</p></details><details><summary>为什么没有登录功能？<span>+</span></summary><p>这是设计上的选择。你可以直接访问空间地址，添加、修改内容或保存设置时输入密码验证，不需要维持登录会话。</p></details><details><summary>这里的文字是私密的吗？<span>+</span></summary><p>不是。文字可通过空间或 Swap 链接阅读。密码保护的是修改操作，因此请不要在这里保存密码、身份信息或其他敏感内容。</p></details><details><summary>什么是 Stacueue？<span>+</span></summary><p>Stacueue = Stack + Queue，是栈和队列的结合。它代表收集与流动的想法，也是这个项目的核心理念。</p></details><details><summary>什么是 D_C_date？<span>+</span></summary><p>D_C_date 是从你的生日开始计算的天数，加上当天时间的比例。你可以在设置中填写生日，让空间记录时间的流动。</p></details><details><summary>别名和纯文本模式有什么用？<span>+</span></summary><p>别名为 Swap 提供容易记住的地址，例如 /你的用户名/reading。纯文本模式只显示原始文字，不包含导航或编辑控件。</p></details></div><a href="/myswap/howto" class="text-link">查看使用指南 {{ icon('arrow') }}</a></article>
 {% endblock %}

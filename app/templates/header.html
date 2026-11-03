@@ -1,38 +1,17 @@
-<div id="header">
-<hr class="space"/>
-<div class="span-2  ">
-    &nbsp;
-</div>
-<div class="span-4 ">
-<a class="button" href="/{% if settings %}{{ settings.username }}{% endif %}">
-  myswap/首页
-</a>
-</div>
-<div class="span-9 ">
-    {% if msg_error %}
-        <h1 class="error">{{ msg_error }}</h1>
-    {% endif %}
-    {% if msg_success %}
-        <h1 class="success">{{ msg_success }}</h1>
-    {% endif %}
-    {% if msg_added %}
-        <h1 class="added">{{ msg_added }}</h1>
-    {% endif %}
-</div>
-
-<div class="span-3  right ">
-  <a class="button" href="/Signup">signup/注册</a>
-</div>
-
-{% if settings %}
-<div class="span-3  right ">
-  <a class="button" href="/{{ settings.username }}/setting">setting/设置</a>
-</div>
-<div class="span-3  right ">
-  <a class="button" href="/{{ settings.username }}?all=ture&display_content=false">lists/仅名称</a>
-</div>
-{% endif %}
-
-<hr />
-<hr class="space"/>
-</div>
+<header class="site-header">
+    <div class="header-inner">
+        <a class="brand" href="/" aria-label="myswap 首页"><span class="brand-symbol" aria-hidden="true">{{ icon('leaf') }}</span><span>myswap<span class="brand-dot">.</span></span></a>
+        <span class="header-divider" aria-hidden="true"></span><span class="header-tagline">给文字一个生长的地方</span>
+        <nav class="header-nav" aria-label="主导航">
+            {% if settings %}
+            <a href="/{{ settings.username }}" {% if request.endpoint == 'main.user_index' %}aria-current="page"{% endif %}>我的空间</a>
+            <a href="/{{ settings.username }}/setting" {% if request.endpoint == 'main.setting' %}aria-current="page"{% endif %}>设置</a>
+            <a class="avatar" href="/{{ settings.username }}" aria-label="{{ settings.username }} 的空间">{{ settings.username[:1]|upper }}</a>
+            {% else %}
+            <a href="/myswap/howto" {% if request.path == '/myswap/howto' %}aria-current="page"{% endif %}>使用指南</a>
+            <a class="nav-about" href="/myswap/myswap-about">关于</a>
+            <a class="button button-dark button-small" href="/Signup">创建空间 {{ icon('arrow-up') }}</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>

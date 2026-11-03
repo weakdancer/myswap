@@ -1,47 +1,11 @@
 {% extends 'base.html' %}
-
-{% block head_meta %}
-<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
-<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
-{% endblock %}
-
-{% block title %}myswap-signup{% endblock %}
-
+{% block title %}创建文字空间 · myswap{% endblock %}
 {% block content %}
-<div class="container"> 
-<center>
-
-<h1 class="success">
-    Signup
-</h1>
-
-<div class="container box">
-<form action="/Signup" method="post">
-    <fieldset>
-        <legend class="alt">signup</legend>
-        
-        <div class="span-8 colborder "><span >username</span></div>
-        <div class="span-8 colborder"><input type="text" name="username" /></div>
-        
-        <div class="span-8 colborder "><span >email</span></div>
-        <div class="span-8 colborder"><input type="text" name="email" /></div>
-        
-        <div class="span-8 colborder "><span >password</span></div>
-        <div class="span-8 colborder"><input type="password" name="password" /></div>
-        
-        <div class="span-8 colborder "><span >confirm_password</span></div>
-        <div class="span-8 colborder"><input type="password" name="confirm_password" /></div>
-        
-        <div class="span-8 colborder "><span >friends</span></div>
-        <div class="span-8 colborder"><input type="text" name="friends" /><span class="alt help">-split with whitespace</span></div>
-        
-        <div class="span-8 colborder ">
-            <button type="submit" class="btn primary">signup</button>
-        </div>
-    </fieldset>
-</form>
-</div>
-
-</center>
-</div>
+<div class="onboarding-layout"><section class="onboarding-story"><div class="eyebrow">A SMALL SPACE. ALL YOURS.</div><h1>你好，<br>新的灵感园丁。</h1><p>给你的想法一个小小的落脚处。<br>从第一段文字开始，慢慢积累自己的世界。</p><div class="onboarding-flower" aria-hidden="true">&#10035;&#65038;</div><div class="onboarding-promise">{{ icon('leaf') }} 简单记录，自由生长。</div></section><section class="form-panel panel"><div class="form-heading"><h2>创建你的空间</h2><p>不需要登录会话，每次保存时用密码验证。</p></div><form action="/Signup" method="post" data-password-match>
+<div class="field"><label for="username">用户名</label><div class="input-prefix"><span>myswap /</span><input id="username" name="username" type="text" value="{{ request.form.get('username', '') }}" autocomplete="username" pattern="[A-Za-z0-9]+" placeholder="yourname" required></div><p class="field-help">英文字母或数字，也将成为你的空间地址。</p></div>
+<div class="field"><label for="email">电子邮箱</label><input id="email" name="email" type="email" value="{{ request.form.get('email', '') }}" autocomplete="email" placeholder="you@example.com" required></div>
+<div class="form-grid"><div class="field"><label for="password">密码</label><input id="password" name="password" type="password" autocomplete="new-password" required placeholder="设置空间密码" data-password-primary></div><div class="field"><label for="confirm_password">确认密码</label><input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password" required placeholder="再次输入密码" data-password-confirm></div></div>
+<div class="field"><label for="friends">朋友 <span>选填</span></label><input id="friends" name="friends" type="text" value="{{ request.form.get('friends', '') }}" placeholder="输入朋友的用户名"><p class="field-help">多个用户名用空格分隔，稍后也可以在设置中添加。</p></div>
+<p class="form-note">{{ icon('info') }} 空间中的文字可通过链接阅读，请勿保存敏感信息。</p><button type="submit" class="button button-dark button-full">创建空间 {{ icon('arrow-up') }}</button><p class="form-footer-note">已经创建过？<a href="/#workspace-name">打开你的空间</a></p>
+</form></section></div>
 {% endblock %}

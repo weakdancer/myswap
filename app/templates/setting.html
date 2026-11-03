@@ -1,57 +1,11 @@
 {% extends 'base.html' %}
-
-{% block head_meta %}
-<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
-<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
-{% endblock %}
-
-{% block title %}myswap-setting{% endblock %}
-
+{% block title %}空间设置 · {{ settings.username }} · myswap{% endblock %}
 {% block content %}
-
-<fieldset class="container">
-  <legend  >settings/设置</legend> 
-<div class="">
-<form action="/{{ settings.username }}/setting" method="post">
-
-
-    <ul>
-        <li class="label">
-            <label for="password">password-----------</label>
-                  <input type="password" id="password"   name="password"   /><span class="alt help">-A MUST/必须填写</span>
-        </li>
-        <li class="label">
-            <label for="username">username-----------</label>
-                        <input type="text"   id="username"   name="username" value="{{ settings.username }}" />
-        </li>
-        <li class="label">
-            <label for="friends">friends-------------</label>
-                  <input type="text"  name="friends" id="friends" value="{{ settings.friends or '' }}"/><span class="alt help">-split with whitespace/使用空格隔开每个对象</span>
-        </li>
-        <li class="label">
-            <label for="userAliases">userAliases--------</label>
-                        <input type="text"   name="userAliases" id="userAliases" value="{{ settings.userAliases or '' }}"/><span class="alt help">-split with whitespace/使用空格隔开每个对象</span>
-        </li>
-        <li class="label">
-            <label for="birthday">birthday--------</label>
-            <input type="text"   name="birthday" id="birthday" value="{{ settings.birthday or '' }}"/><span class="alt help">-format/格式 1990-10-16</span>
-        </li>
-        <li class="label">
-            <label for="new_password">new_password----</label>
-                  <input type="password"   id="new_password"  name="new_password"   /><span class="alt help">-leave it blank if you do't want change/如果不需要修改密码，就不用填</span>
-        </li>
-        <li class="label">
-            <label for="confirm_password">confirm_password</label>
-                        <input type="password"   id="confirm_password"  name="confirm_password"   /><span class="alt help">-confirm_password/重复上方密码</span>
-        </li>
-                <div class="buttons">
-                        <button type="submit" class="btn primary">
-                          save/保存
-                        </button>
-                </div>
-    </ul>
-</form>
-</div>
-</fieldset>
-
+<a href="/{{ settings.username }}" class="back-link">{{ icon('back') }} 返回文字空间</a><div class="page-heading"><div><div class="eyebrow">MAKE IT YOUR OWN</div><h1>空间设置<span class="heading-star" aria-hidden="true">&#10035;&#65038;</span></h1><p>整理你的连接，也照顾自己的小小世界。</p></div></div>
+<div class="settings-layout"><aside class="settings-sidebar"><div class="settings-profile"><span class="avatar avatar-large">{{ settings.username[:1]|upper }}</span><div><strong>{{ settings.username }}</strong><span>/ {{ settings.username }}</span></div></div><a class="settings-anchor active" href="#profile-settings">{{ icon('settings') }} 基本信息</a><a class="settings-anchor" href="#connection-settings">{{ icon('link') }} 朋友与别名</a><a class="settings-anchor" href="#security-settings">{{ icon('lock') }} 密码与验证</a><p class="sidebar-hint">修改只在点击保存后生效。<br>每次保存都需要当前密码。</p></aside>
+<form class="settings-form panel" action="/{{ settings.username }}/setting" method="post" data-dirty-form data-password-match>
+<section class="settings-section" id="profile-settings"><div class="form-section-heading"><h2>基本信息</h2><p>名字和时间，构成你的独特坐标。</p></div><div class="field"><label for="username">用户名</label><div class="input-prefix"><span>myswap /</span><input type="text" id="username" name="username" value="{{ request.form.get('username', settings.username) }}" pattern="[A-Za-z0-9]+" autocomplete="username" required></div><p class="field-help">修改用户名会改变你的空间地址。</p></div><div class="field"><label for="birthday">生日 <span>选填</span></label><input type="date" id="birthday" name="birthday" value="{{ request.form.get('birthday', settings.birthday or '') }}"><p class="field-help">用于计算 D_C_date，记录从出生至今走过的日子。</p></div></section>
+<section class="settings-section" id="connection-settings"><div class="form-section-heading"><h2>朋友与别名</h2><p>让经常访问的人和文字，更近一点。</p></div><div class="field"><label for="friends">朋友</label><input type="text" name="friends" id="friends" value="{{ request.form.get('friends', settings.friends or '') }}" placeholder="例如 alice bob"><p class="field-help">输入朋友的用户名，使用空格分隔。</p></div><div class="field"><label for="userAliases">快捷别名</label><input type="text" name="userAliases" id="userAliases" value="{{ request.form.get('userAliases', settings.userAliases or '') }}" placeholder="例如 reading ideas daily"><p class="field-help">要在空间侧栏显示的 Swap 别名，使用空格分隔。</p></div></section>
+<section class="settings-section" id="security-settings"><div class="form-section-heading"><h2>密码与验证</h2><p>输入当前密码，即可保存本页的所有修改。</p></div><div class="field"><label for="password">当前密码 <span class="required-label">必填</span></label><input type="password" id="password" name="password" autocomplete="current-password" placeholder="验证这是你的空间" required></div><div class="form-grid"><div class="field"><label for="new_password">新密码 <span>选填</span></label><input type="password" id="new_password" name="new_password" autocomplete="new-password" placeholder="不修改请留空" data-password-primary></div><div class="field"><label for="confirm_password">确认新密码</label><input type="password" id="confirm_password" name="confirm_password" autocomplete="new-password" placeholder="再次输入新密码" data-password-confirm></div></div></section>
+<div class="settings-save"><a href="/{{ settings.username }}" class="text-link">取消</a><button type="submit" class="button button-dark">{{ icon('check') }} 保存设置</button></div></form></div>
 {% endblock %}

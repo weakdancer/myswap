@@ -6,13 +6,15 @@
 
 ```bash
 # 1. 进入项目目录
-cd myswap_local
+cd myswap
 
-# 2. 激活虚拟环境
-source venv/bin/activate
+# 2. 创建虚拟环境并安装依赖
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install -r requirements.txt
 
 # 3. 运行应用
-python run.py
+python -m flask --app run:app run --host 127.0.0.1 --port 5000 --no-debugger --no-reload
 
 # 4. 在浏览器中访问
 # http://127.0.0.1:5000
@@ -44,9 +46,17 @@ python run.py
 | `/myswap/faq` | 常见问题 |
 | `/myswap/myswap-about` | 关于 |
 
-## 超级密码
+## 密码与本地运行
 
-`superweakdancer` - 可用于验证任何用户
+不提供通用管理密码。新密码使用 Werkzeug 的带盐密码哈希；现有 SHA1 账户在本人密码验证成功后自动升级。
+
+默认仅监听本机回环地址。此版本用于本地试用，尚未完成面向公网的完整安全审查，不应直接公开部署。
+
+## 回归测试
+
+```bash
+python -m unittest discover -s tests -v
+```
 
 ## 数据存储
 

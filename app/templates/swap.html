@@ -1,98 +1,32 @@
 {% extends 'base.html' %}
-
-{% block head_meta %}
-<meta name="description" content="All For Plain Text Sharing./种植并繁殖文字 myswap (taiji implant)/种殖" />
-<meta name="keywords" content=" plain text,sharing,种植,繁殖,文字,myswap,taiji,implant,种殖" />
-{% endblock %}
-
-{% block title %}myswap-({{ settings.username }}){% endblock %}
-
+{% block title %}{{ settings.username }} 的文字空间 · myswap{% endblock %}
 {% block content %}
-
 {% if username != 'Ayl' %}
-
-{% if display_content == 'true' %}
-
-<div class="container">
-
-{% if friends %}
-<h2>Friends</h2>
-<hr />
-<div class="container box">
-
-{% for friend in friends %}
-    <div class="span-3"><a class="button" href="/{{ friend }}">{{ friend }}</a></div> 
-{% endfor %}
-</div>
-{% endif %}
-
-{% if aliases %}
-<h2>Aliases</h2>
-<hr />
-<div class="container box">
-{% for alias in aliases %}
-    <div class="span-3"><a class="button" href="/{{ settings.username }}/{{ alias }}">{{ alias }}</a></div> 
-{% endfor %}
-</div>
-{% endif %}
-
-
-<center><h3>~ {{ "%0.2f"|format(d_c_date) }} ~</h3></center>
-<br />
-    
-<div class="span-24">
-
-{% endif %}
-
-{% if display_content == 'true' %}
-{% for swap in swaps %}
-    <fieldset style="">
-
-        <legend>
-            <h2>
-            {% if swap.alias %}
-                <a class=" " href="/{{ settings.username }}/{{ swap.alias }}">
-                    {{ swap.alias }}
-                </a>
-            {% else %}
-                <a class=" " href="/{{ settings.username }}/{{ swap.swap_id }}">
-                    {{ swap.swap_id }}
-                </a>
-            {% endif %}
-            </h2>
-        </legend>
-
-    <pre style="word-wrap: break-word;width:600px">{{ swap.content|transform_url|safe }}</pre>
-    </fieldset>
-{% endfor %}
-{% endif %}
-
-{% if display_content == 'false' %}
-{% for swap in swaps %}
-
-    {% if swap.alias %}
-        <a class="button" href="/{{ settings.username }}/{{ swap.alias }}">
-            {{ swap.alias }}
-        </a>
+<div class="workspace-heading"><div><div class="eyebrow">YOUR TEXT GARDEN</div><h1>{{ settings.username }}<span class="heading-light">的文字空间</span><span class="heading-star" aria-hidden="true">&#10035;&#65038;</span></h1><p>把零散的灵感，种成自己的小小世界。</p></div><a href="#new-swap" data-open-composer class="button button-dark">{{ icon('plus') }} 新建 Swap</a></div>
+<div class="workspace-layout">
+<section class="notes-area" aria-labelledby="notes-title">
+    <div class="notes-toolbar"><h2 id="notes-title">全部文字 <span class="count-pill">{{ swaps|length }}</span></h2><div class="view-switch" aria-label="显示方式"><a href="/{{ settings.username }}?all=true&display_content=true" class="{% if display_content != 'false' %}active{% endif %}" aria-label="内容视图" {% if display_content != 'false' %}aria-current="page"{% endif %}>{{ icon('grid') }}</a><a href="/{{ settings.username }}?all=true&display_content=false" class="{% if display_content == 'false' %}active{% endif %}" aria-label="仅名称视图" {% if display_content == 'false' %}aria-current="page"{% endif %}>{{ icon('list') }}</a></div></div>
+    {% if swaps %}<div class="search-field">{{ icon('search') }}<label class="sr-only" for="note-search">筛选本页文字</label><input type="search" id="note-search" placeholder="搜索本页的标题或内容…" autocomplete="off" data-note-search><span class="search-hint">本页筛选</span></div>{% endif %}
+    <div class="notes-list {% if display_content == 'false' %}compact-list{% endif %}" data-notes-list>
+    {% for swap in swaps %}
+        <article class="note-card" data-note-card data-note-search-text="{{ (swap.alias or swap.swap_id)|string|lower }} {{ swap.content|lower }}">
+            <div class="note-card-heading"><div class="note-title-wrap"><span class="note-icon">{{ icon('file') }}</span><h3><a href="/{{ settings.username }}/{{ swap.alias or swap.swap_id }}">{{ swap.alias or swap.swap_id }}</a></h3></div><a class="icon-link" href="/{{ settings.username }}/{{ swap.alias or swap.swap_id }}" aria-label="打开 {{ swap.alias or swap.swap_id }}">{{ icon('arrow-up') }}</a></div>
+            {% if display_content != 'false' %}<pre class="note-content">{{ swap.content|transform_url|safe }}</pre><div class="note-meta"><span>SWAP / {{ '%03d'|format(swap.swap_id) }}</span><span>{{ swap.content|replace('\r\n', '\n')|length }} 字符</span></div>{% else %}<span class="compact-id">#{{ swap.swap_id }}</span>{% endif %}
+        </article>
     {% else %}
-        <a class="button" href="/{{ settings.username }}/{{ swap.swap_id }}">
-            {{ swap.swap_id }}
-        </a>
-    {% endif %}
-
-{% endfor %}
-{% endif %}
-
-
+        <div class="empty-state"><div class="empty-sprout">{{ icon('leaf') }}</div><span class="eyebrow">A FRESH START</span><h3>这里，等待第一颗灵感。</h3><p>记录一句话、收藏一个链接，<br>或写下今天最想记住的事。</p><a href="#new-swap" data-open-composer class="button button-dark">{{ icon('plus') }} 写下第一段文字</a></div>
+    {% endfor %}
+    </div>
+    <div class="search-empty empty-state" data-search-empty hidden><div class="empty-sprout">{{ icon('search') }}</div><h3>没有找到匹配的文字</h3><p>试试其他关键词，或清空搜索。</p><button class="button button-subtle" type="button" data-clear-search>清空搜索</button></div><p class="search-result sr-only" data-search-status role="status"></p>
+    <details class="composer panel" id="new-swap" {% if request.method == 'POST' %}open{% endif %}><summary><span>{{ icon('plus') }} 种下一段新文字</span><span class="composer-label">NEW SWAP</span></summary><form action="/{{ settings.username }}/addSwap" method="post" data-dirty-form>
+        <div class="field"><label for="new-content">内容</label><textarea id="new-content" name="content" rows="7" placeholder="从一个小小的想法开始…" required data-count-target="new-count">{{ request.form.get('content', '') }}</textarea><div class="field-bottom"><span>保持纯粹，只需文字。</span><span id="new-count">0 字符</span></div></div>
+        <div class="form-grid"><div class="field"><label for="new-alias">别名 <span>选填</span></label><input type="text" id="new-alias" name="alias" value="{{ request.form.get('alias', '') }}" placeholder="例如 reading-notes" pattern="[A-Za-z0-9-]+"><p class="field-help">英文字母、数字或连字符，作为这段文字的地址。</p></div><div class="field"><label for="new-password">密码</label><input type="password" id="new-password" name="password" autocomplete="current-password" required placeholder="输入空间密码"><p class="field-help">每次保存时验证，不创建登录会话。</p></div></div><div class="form-actions"><span class="small-muted">文字会出现在你的空间中。</span><button type="submit" class="button button-dark">保存 Swap {{ icon('arrow') }}</button></div>
+    </form></details>
+</section>
+<aside class="workspace-sidebar" aria-label="空间信息"><div class="garden-card"><div class="garden-top"><span class="eyebrow">KEEP GROWING</span>{{ icon('leaf') }}</div><p>每一天，<br>都值得留下点什么。</p><div class="day-count"><strong>{{ '%0.2f'|format(d_c_date) }}</strong><span>D_C_DATE / 生命日数</span></div>{% if not settings.birthday %}<a href="/{{ settings.username }}/setting">设置生日，开始计数 {{ icon('arrow') }}</a>{% else %}<a href="/{{ settings.username }}/WDDC">看看此刻 {{ icon('arrow') }}</a>{% endif %}</div>
+<div class="sidebar-section"><div class="sidebar-section-heading"><h2>快捷别名</h2><a href="/{{ settings.username }}/setting" aria-label="设置快捷别名">{{ icon('settings') }}</a></div>{% if aliases %}<div class="alias-links">{% for alias in aliases %}<a href="/{{ settings.username }}/{{ alias }}"><span>{{ icon('file') }}{{ alias }}</span>{{ icon('arrow-up') }}</a>{% endfor %}</div>{% else %}<p class="sidebar-hint">把常看的 Swap 加入设置，<br>让熟悉的文字触手可及。</p>{% endif %}</div>
+<div class="sidebar-section"><div class="sidebar-section-heading"><h2>朋友的空间</h2><a href="/{{ settings.username }}/setting" aria-label="设置朋友">{{ icon('plus') }}</a></div>{% if friends %}<div class="friend-links">{% for friend in friends %}<a href="/{{ friend }}"><span class="mini-avatar">{{ friend[:1]|upper }}</span>{{ friend }}{{ icon('arrow-up') }}</a>{% endfor %}</div>{% else %}<p class="sidebar-hint">在设置中添加朋友，<br>也去他们的文字花园逛逛。</p>{% endif %}</div>
+<div class="sidebar-bottom">{{ icon('lock') }}<p>无需登录，每次修改使用密码验证。空间内容可通过链接阅读。</p></div></aside>
 </div>
-
-</div>
-
-{% endif %}
-
-
-{% if username == 'Ayl' %}
-Ayl
-{% endif %}
-
+{% else %}<div class="panel">Ayl</div>{% endif %}
 {% endblock %}

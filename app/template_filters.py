@@ -1,12 +1,19 @@
 import re
+from markupsafe import Markup, escape
 
 def transform_url(text):
-    """转换文本中的URL为链接"""
+    """Escape plain text and link only HTTP(S) URLs without allowing HTML."""
     if not text:
-        return ''
-    # 将URL转换为链接
-    url_pattern = r'((https?|file)://([-\w.]+)+(:\d+)?(/[^\s^\n]*)?)'
-    return re.sub(url_pattern, r'<a target="_blank" class="myswap-link" href="\1">\1</a>', text)
+        return Markup('')
+    parts = []
+    previous_end = 0
+    for match in re.finditer(r'https?://[^\s<>"\']+', text):
+        parts.append(escape(text[previous_end:match.start()]))
+        url = match.group(0)
+        parts.append(Markup('<a target="_blank" rel="noopener noreferrer" class="myswap-link" href="{}">{}</a>').format(url, url))
+        previous_end = match.end()
+    parts.append(escape(text[previous_end:]))
+    return Markup('').join(parts)
 
 def init_filters(app):
     app.jinja_env.filters['transform_url'] = transform_url

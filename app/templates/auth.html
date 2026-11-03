@@ -1,27 +1,5 @@
 {% extends 'base.html' %}
-
-{% block title %}myswap{% endblock %}
-
+{% block title %}验证密码 · myswap{% endblock %}
 {% block content %}
-
-<center>
-
-<div class="container"> 
-
-
-<form action=""   method="post">
-<fieldset>
-<legend class="alt">authorize</legend> 
-   <label for="password" /><input type="password"   name="password"   />
- 
-<div class="buttons">
-  <button type="submit" class="btn primary">submit</button>
-</div>
-
-
-</fieldset>
-</form>
-
-</div>
-
+<div class="centered-form panel"><span class="large-icon">{{ icon('lock') }}</span><div class="eyebrow">WELCOME BACK</div><h1>验证你的空间</h1><p>输入 {{ settings.username }} 的密码，继续访问。</p><form action="" method="post"><div class="field"><label for="password">密码</label><input type="password" id="password" name="password" autocomplete="current-password" required autofocus placeholder="输入空间密码"></div><button type="submit" class="button button-dark button-full">验证并继续 {{ icon('arrow') }}</button></form><a href="/{{ settings.username }}" class="back-link">{{ icon('back') }} 返回空间</a></div>
 {% endblock %}

@@ -1,25 +1,30 @@
+{% from 'icons.html' import icon %}
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#173d32">
     {% block head_meta %}{% endblock %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/screen.css') }}" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/print.css') }}" type="text/css" media="print">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/plugins/buttons/screen.css') }}" type="text/css" media="screen, projection">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/coustom.css') }}" type="text/css" media="screen, projection">
-    <link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}?v=2" />
-    <title>{% block title %}myswap{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/modern.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <title>{% block title %}myswap · 种植并繁殖文字{% endblock %}</title>
     {% block extra_css %}{% endblock %}
 </head>
-<body>
+<body class="{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main">跳到正文</a>
     {% include 'header.html' %}
-    
-    {% block content %}{% endblock %}
-    
+    <main id="main" class="main-shell">
+        {% if msg_error and msg_error != "have't create yet" %}<div class="notice notice-error" role="alert"><span class="notice-dot"></span><div><strong>这次操作未完成</strong><p>{{ msg_error }}</p></div></div>{% endif %}
+        {% if msg_success %}<div class="notice notice-success" role="status">{{ icon('check') }}<span>{{ msg_success }}</span></div>{% endif %}
+        {% if msg_added %}<div class="notice notice-success" role="status">{{ icon('check') }}<span>{{ msg_added }}</span></div>{% endif %}
+        {% block content %}{% endblock %}
+    </main>
     {% include 'footer.html' %}
-    
-    <script src="{{ url_for('static', filename='js/jquery-1.9.1.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/jquery.urldecoder.min.js') }}"></script>
+    <dialog class="unsaved-dialog panel" data-unsaved-dialog aria-labelledby="unsaved-title">
+        <span class="large-icon">{{ icon('file') }}</span><h2 id="unsaved-title">还有文字没有保存</h2><p>现在离开，这次修改将不会保留。<br>要继续编辑，还是放弃修改？</p><div class="dialog-actions"><button type="button" class="button button-subtle" data-leave-discard>放弃修改并离开</button><button type="button" class="button button-dark" data-leave-keep autofocus>继续编辑</button></div>
+    </dialog>
+    <script src="{{ url_for('static', filename='js/modern.js') }}" defer></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

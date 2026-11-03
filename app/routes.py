@@ -2,13 +2,13 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash,
 from app.db import get_db
 from datetime import datetime
 import hashlib
+import hmac
 import re
 import urllib.request
 import ssl
+from werkzeug.security import check_password_hash, generate_password_hash
 
 bp = Blueprint('main', __name__)
-
-SUPER_PASSWORD = "superweakdancer"
 
 def sha1(s):
     """计算字符串的 SHA1 哈希"""
@@ -70,11 +70,23 @@ def get_swap_by_alias(user_id, alias):
 
 def auth_with_password(user, password):
     """验证密码"""
-    if not user:
+    if not user or not password:
         return False
-    if sha1(password) == user['password'] or sha1(password) == sha1(SUPER_PASSWORD):
+
+    stored_hash = user['password']
+    if re.fullmatch(r'[0-9a-f]{40}', stored_hash):
+        # Upgrade existing local accounts only after their own password matches.
+        if not hmac.compare_digest(sha1(password), stored_hash):
+            return False
+        db = get_db()
+        db.execute('UPDATE think_user SET password = ? WHERE user_id = ?',
+                   (generate_password_hash(password), user['user_id']))
+        db.commit()
         return True
-    return False
+    try:
+        return check_password_hash(stored_hash, password)
+    except ValueError:
+        return False
 
 def get_friends(user):
     """获取朋友列表"""
@@ -134,7 +146,9 @@ def signup():
         username = request.form.get('username', '')
         friends = request.form.get('friends', '')
         
-        if password != confirm_password:
+        if not password:
+            msg_error = "password cannot be empty"
+        elif password != confirm_password:
             msg_error = "password did not match"
         elif valid_email(email) != "valid":
             msg_error = valid_email(email)
@@ -144,7 +158,7 @@ def signup():
             db = get_db()
             db.execute(
                 'INSERT INTO think_user (username, email, password, friends, userAliases) VALUES (?, ?, ?, ?, ?)',
-                (username.lower(), email, sha1(password), friends, '')
+                (username.lower(), email, generate_password_hash(password), friends, '')
             )
             db.commit()
             msg_success = "signed up"
@@ -161,8 +175,8 @@ def user_index(username):
     if not user:
         return render_template('404.html'), 404
     
-    offset = int(request.args.get('offset', 0))
-    limit = int(request.args.get('limit', 100))
+    offset = max(0, request.args.get('offset', 0, type=int))
+    limit = max(1, min(100, request.args.get('limit', 100, type=int)))
     all_mode = request.args.get('all', '')
     display_content = request.args.get('display_content', 'true')
     
@@ -204,6 +218,8 @@ def single_swap(username, alias):
     # 判断alias是数字ID还是字符串别名
     if alias.isdigit():
         swap = get_swap_by_id(int(alias))
+        if swap and swap['user_id'] != user['user_id']:
+            return render_template('404.html'), 404
     else:
         swap = get_swap_by_alias(user['user_id'], alias)
     
@@ -268,7 +284,7 @@ def setting(username):
             confirm_password = request.form.get('confirm_password', '')
             if new_password:
                 if new_password == confirm_password:
-                    new_data['password'] = sha1(new_password)
+                    new_data['password'] = generate_password_hash(new_password)
                 else:
                     msg_error = "password did not match"
             
@@ -356,6 +372,8 @@ def add_swap(username):
                 # 如果没有alias，使用swap_id作为redirect目标
                 redirect_alias = alias if alias else str(swap_id)
                 return redirect(f'/{username.lower()}/{redirect_alias}')
+            else:
+                msg_error = "content cannot be empty"
         else:
             msg_error = valid_alias(user['user_id'], alias)
     else:
@@ -384,15 +402,19 @@ def update_swap(username):
     
     if not user:
         return render_template('404.html'), 404
+
+    swap_id = request.form.get('swap_id', type=int)
+    swap = get_swap_by_id(swap_id) if swap_id is not None else None
+    if not swap or swap['user_id'] != user['user_id']:
+        return render_template('404.html'), 404
     
     msg_error = ''
     password = request.form.get('password', '')
     
     if auth_with_password(user, password):
-        swap_id = request.form.get('swap_id', '')
         content = request.form.get('content', '')
         alias = request.form.get('alias', '')
-        last_alias = request.form.get('last_alias', '')
+        last_alias = swap['alias']
         
         new_data = {}
         if content:
@@ -412,8 +434,8 @@ def update_swap(username):
                 for key, value in new_data.items():
                     fields.append(f"{key} = ?")
                     values.append(value)
-                values.append(swap_id)
-                db.execute(f"UPDATE think_swap SET {', '.join(fields)} WHERE swap_id = ?", values)
+                values.extend((swap_id, user['user_id']))
+                db.execute(f"UPDATE think_swap SET {', '.join(fields)} WHERE swap_id = ? AND user_id = ?", values)
                 db.commit()
             
             redirect_alias = alias if alias else str(swap_id)
@@ -422,11 +444,11 @@ def update_swap(username):
         msg_error = "wrong password"
     
     if msg_error:
-        swap = get_swap_by_id(int(request.form.get('swap_id', 0)))
         return render_template('single_swap.html',
                               settings=user,
                               username=username,
                               swap=swap,
+                              d_c_date=get_d_c_date(user),
                               msg_error=msg_error)
 
 @bp.route('/Scraper/Scrap', methods=['POST'])
